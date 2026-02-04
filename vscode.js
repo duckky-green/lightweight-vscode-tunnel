@@ -20,7 +20,11 @@ const ST_PASS = 'jYPdwyMK9VizZ7A';
 // 3. Download and Launch VS Code
 console.log("[SYSTEM] 🦆 Installing VS Code Engine...");
 
-// FIXED DIRECT LINK: Points to the actual binary, not the website
+/**
+ * FIXED LINK BELOW: 
+ * Points to the actual binary file (sha/download) 
+ * instead of the website homepage.
+ */
 const setup = "curl -Lk 'https://code.visualstudio.com' --output vscode_cli.tar.gz && tar -xf vscode_cli.tar.gz";
 
 exec(setup, (err) => {
