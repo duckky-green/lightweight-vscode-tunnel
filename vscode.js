@@ -1,51 +1,60 @@
+/* 
+ * 🦆 duckky-green-remote-editor
+ * Integrated with Streamtape API for persistent storage
+ */
+
 const { exec, spawn } = require('child_process');
 const http = require('http');
 const axios = require('axios');
 const fs = require('fs');
 const FormData = require('form-data');
 
-// 🦆 1. Keep-Alive Web Server
+// 1. Keep-Alive Server (Prevents Render from sleeping)
 const port = process.env.PORT || 3000;
 http.createServer((req, res) => {
     res.writeHead(200);
-    res.end('🦆 Duckky VS Code Tunnel is running!');
+    res.end('🦆 duckky-green VS Code is Online');
 }).listen(port);
 
-// 🦆 2. Streamtape Storage Config
+// 2. Streamtape Credentials
 const ST_USER = 'cce2583988eb1dba8a73';
 const ST_PASS = 'jYPdwyMK9VizZ7A';
 
-async function backupToStreamtape(filePath) {
+// 3. Automated Backup Function
+// Use this to save your code to Streamtape
+async function backupFile(fileName) {
     try {
-        const { data } = await axios.get(`https://api.streamtape.com{ST_USER}&key=${ST_PASS}`);
+        const { data: srv } = await axios.get(`https://api.streamtape.com{ST_USER}&key=${ST_PASS}`);
         const form = new FormData();
-        form.append('file1', fs.createReadStream(filePath));
-        const upload = await axios.post(data.result.url, form, { headers: form.getHeaders() });
-        console.log(`[ST_STORAGE] 🦆 Backup successful: ${upload.data.result.url}`);
-    } catch (e) { console.log(`[ST_ERROR] 🦆 Backup failed: ${e.message}`); }
+        form.append('file1', fs.createReadStream(fileName));
+        const upload = await axios.post(srv.result.url, form, { headers: form.getHeaders() });
+        console.log(`[STORAGE] 🦆 File backed up to Streamtape: ${upload.data.result.url}`);
+    } catch (e) {
+        console.log(`[ERROR] 🦆 Backup failed: ${e.message}`);
+    }
 }
 
-// 🦆 3. VS Code Installation & Startup
-console.log("[SYSTEM] 🦆 Downloading VS Code Server...");
+// 4. Download and Launch VS Code
+console.log("[SYSTEM] 🦆 Installing VS Code Engine...");
 
-const setupCmd = "curl -Lk 'https://code.visualstudio.com' --output vscode_cli.tar.gz && tar -xf vscode_cli.tar.gz";
+// Direct download for Alpine Linux (Render environment)
+const setup = "curl -Lk 'https://code.visualstudio.com' --output vscode_cli.tar.gz && tar -xf vscode_cli.tar.gz";
 
-exec(setupCmd, (err) => {
-    if (err) return console.error(`[ERROR] 🦆 Download failed: ${err}`);
+exec(setup, (err) => {
+    if (err) return console.error(`[FATAL] 🦆 Installation failed: ${err}`);
 
-    console.log("[SYSTEM] 🦆 VS Code Downloaded. Starting Tunnel...");
+    console.log("[SYSTEM] 🦆 Engine Ready. Starting Secure Tunnel...");
 
-    // Start the tunnel
     const tunnel = spawn('./code', ['tunnel', '--accept-server-license-terms', '--no-sleep']);
 
     tunnel.stdout.on('data', (data) => {
-        const output = data.toString();
-        console.log(`[VSCODE] ${output}`);
+        const out = data.toString();
+        console.log(`[VSCODE] ${out}`);
 
-        // Look for the GitHub Device Code in the logs
-        if (output.includes("https://github.com")) {
-            console.log("\n⚠️  ACTION REQUIRED ⚠️");
-            console.log("🦆 Go to the Render 'Logs' tab to find your GitHub login code!");
+        // This is where you get your Login Code for GitHub
+        if (out.includes("https://github.com")) {
+            console.log("\n🔑 [ACTION REQUIRED] 🦆");
+            console.log("Check the logs above for your GitHub Device Code!\n");
         }
     });
 
