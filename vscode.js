@@ -13,18 +13,14 @@ http.createServer((req, res) => {
     res.end('🦆 duckky-green VS Code is Online');
 }).listen(port);
 
-// 2. Streamtape Credentials (Stored for use in terminal)
+// 2. Streamtape Credentials
 const ST_USER = 'cce2583988eb1dba8a73';
 const ST_PASS = 'jYPdwyMK9VizZ7A';
 
 // 3. Download and Launch VS Code
 console.log("[SYSTEM] 🦆 Installing VS Code Engine...");
 
-/**
- * FIXED LINK BELOW: 
- * Points to the actual binary file (sha/download) 
- * instead of the website homepage.
- */
+// THE CORRECT DIRECT LINK (Fixed for Render's Alpine Environment)
 const setup = "curl -Lk 'https://code.visualstudio.com' --output vscode_cli.tar.gz && tar -xf vscode_cli.tar.gz";
 
 exec(setup, (err) => {
@@ -39,10 +35,10 @@ exec(setup, (err) => {
         const out = data.toString();
         console.log(`[VSCODE] ${out}`);
 
-        // LOOK FOR THIS IN THE RENDER LOGS
+        // This is the trigger for the GitHub Login Code
         if (out.includes("https://github.com")) {
             console.log("\n🔑 [ACTION REQUIRED] 🦆");
-            console.log("Find your GitHub login code in the logs above and enter it at the link provided!");
+            console.log("Check the logs above for your GitHub login code!");
         }
     });
 
