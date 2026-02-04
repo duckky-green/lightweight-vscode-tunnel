@@ -1,0 +1,12 @@
+{
+  "name": "duckky-green-full-vscode",
+  "version": "1.0.0",
+  "main": "vscode.js",
+  "scripts": {
+    "start": "node vscode.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "form-data": "^4.0.0"
+  }
+}
